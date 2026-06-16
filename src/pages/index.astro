@@ -7,6 +7,7 @@ interface Contribution {
   description: string;
   language: string;
   type: "feature" | "bugfix";
+  status: "open" | "closed";
   url: string;
 }
 
@@ -19,16 +20,18 @@ const contributions: Contribution[] = [
     description: "Fixed 404 errors on click/open tracking links when safepath is enabled. Recipients in incognito or forwarded emails could not open tracking links.",
     language: "Go",
     type: "bugfix",
+    status: "open",
     url: "https://github.com/Billionmail/BillionMail/pull/354",
   },
   {
-    date: "2026-06-15",
+    date: "2026-06-15 — closed",
     project: "Syncthing",
     pr: 10749,
     title: "Preserve config values when PATCHing folder",
-    description: "Fixed PATCH /rest/config/folders/:id resetting unspecified fields to defaults. Affected cleanupIntervalS, rescanIntervalS, and other config values.",
+    description: "Fixed PATCH /rest/config/folders/:id resetting unspecified fields to defaults. Closed: maintainer does not accept AI-mediated PR discussions.",
     language: "Go",
     type: "bugfix",
+    status: "closed",
     url: "https://github.com/syncthing/syncthing/pull/10749",
   },
   {
@@ -39,6 +42,7 @@ const contributions: Contribution[] = [
     description: "Added paseo agent unarchive as the inverse of the existing archive command. Uses the same refresh_agent_request RPC the app's Unarchive button calls.",
     language: "TypeScript",
     type: "feature",
+    status: "open",
     url: "https://github.com/getpaseo/paseo/pull/1551",
   },
 ];
@@ -151,6 +155,17 @@ const contributions: Contribution[] = [
         color: #58a6ff;
         border: 1px solid rgba(88, 166, 255, 0.25);
       }
+      .badge-closed {
+        background: rgba(139, 148, 158, 0.12);
+        color: #8b949e;
+        border: 1px solid rgba(139, 148, 158, 0.25);
+      }
+      .card.closed {
+        opacity: 0.65;
+      }
+      .card.closed .card-title {
+        color: #8b949e;
+      }
       .card-title {
         color: #58a6ff;
         text-decoration: none;
@@ -190,8 +205,10 @@ const contributions: Contribution[] = [
         <p>Open source contributions</p>
         <div class="stats">
           <div class="stat">
-            <span class="stat-number">{contributions.length}</span>
-            <span class="stat-label">PRs</span>
+            <span class="stat-number">
+              {contributions.filter((c) => c.status === "open").length}
+            </span>
+            <span class="stat-label">Open PRs</span>
           </div>
           <div class="stat">
             <span class="stat-number">
@@ -204,13 +221,16 @@ const contributions: Contribution[] = [
 
       <div class="contributions">
         {contributions.map((c) => (
-          <article class="card">
+          <article class={`card ${c.status === "closed" ? "closed" : ""}`}>
             <div class="card-header">
               <span class="card-project">{c.project}</span>
               <div class="card-meta">
                 <span class={`badge ${c.type === "feature" ? "badge-feature" : "badge-bugfix"}`}>
                   {c.type === "feature" ? "feature" : "bugfix"}
                 </span>
+                {c.status === "closed" ? (
+                  <span class="badge badge-closed">closed</span>
+                ) : null}
                 <span class="badge badge-lang">{c.language}</span>
               </div>
             </div>
