@@ -1,0 +1,70 @@
+---
+interface Props {
+  languages: string[];
+  types: string[];
+  statuses: string[];
+}
+
+const { languages, types, statuses } = Astro.props;
+---
+
+<div class="filter-bar" id="filter-bar">
+  <span class="filter-label">Status</span>
+  <button class="filter-btn active" data-group="status" data-value="all">all</button>
+  {statuses.map((s) => (
+    <button class="filter-btn" data-group="status" data-value={s}>{s}</button>
+  ))}
+
+  <span class="filter-label">Type</span>
+  <button class="filter-btn active" data-group="type" data-value="all">all</button>
+  {types.map((t) => (
+    <button class="filter-btn" data-group="type" data-value={t}>{t}</button>
+  ))}
+
+  <span class="filter-label">Language</span>
+  <button class="filter-btn active" data-group="lang" data-value="all">all</button>
+  {languages.map((l) => (
+    <button class="filter-btn" data-group="lang" data-value={l}>{l}</button>
+  ))}
+</div>
+
+<script>
+  const bar = document.getElementById("filter-bar")!;
+  const cards = document.querySelectorAll<HTMLElement>("[data-card]");
+  const active: Record<string, string> = { status: "all", type: "all", lang: "all" };
+
+  bar.addEventListener("click", (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLButtonElement>(".filter-btn");
+    if (!btn) return;
+
+    const group = btn.dataset.group!;
+    const value = btn.dataset.value!;
+    active[group] = value;
+
+    bar.querySelectorAll(`[data-group="${group}"]`).forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+
+    cards.forEach((card) => {
+      const match =
+        (active.status === "all" || card.dataset.status === active.status) &&
+        (active.type === "all" || card.dataset.type === active.type) &&
+        (active.lang === "all" || card.dataset.lang === active.lang);
+      card.style.display = match ? "" : "none";
+    });
+  });
+</script>
+
+<style>
+  .filter-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
+  .filter-btn {
+    background: var(--bg-tertiary); border: 1px solid var(--border-primary);
+    color: var(--text-muted); padding: 4px 14px; border-radius: var(--radius-full);
+    font-size: 0.8rem; cursor: pointer; transition: all var(--transition-fast); font-family: inherit;
+  }
+  .filter-btn:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+  .filter-btn.active { background: var(--accent-dim); border-color: var(--accent-border); color: var(--accent); }
+  .filter-label {
+    color: var(--text-faint); font-size: 0.75rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-right: 4px;
+  }
+</style>

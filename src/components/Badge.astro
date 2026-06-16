@@ -1,0 +1,14 @@
+---
+type Variant = "accent" | "success" | "danger" | "warning" | "neutral";
+
+interface Props {
+  variant: Variant;
+}
+
+const { variant } = Astro.props;
+const baseClass = `badge badge-${variant}`;
+---
+
+<span class={baseClass}>
+  <slot />
+</span>

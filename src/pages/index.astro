@@ -1,249 +1,74 @@
 ---
-interface Contribution {
-  date: string;
-  project: string;
-  pr: number;
-  title: string;
-  description: string;
-  language: string;
-  type: "feature" | "bugfix";
-  status: "open" | "closed";
-  url: string;
-}
+import Layout from "../components/Layout.astro";
+import Card from "../components/Card.astro";
+import FilterBar from "../components/FilterBar.astro";
+import { contributions, getStats, type Contribution } from "../data/contributions";
+import { achievements, getAchievementStats } from "../data/achievements";
 
-const contributions: Contribution[] = [
-  {
-    date: "2026-06-15",
-    project: "BillionMail",
-    pr: 354,
-    title: "Exclude /pmta tracking links from safepath check",
-    description: "Fixed 404 errors on click/open tracking links when safepath is enabled. Recipients in incognito or forwarded emails could not open tracking links.",
-    language: "Go",
-    type: "bugfix",
-    status: "open",
-    url: "https://github.com/Billionmail/BillionMail/pull/354",
-  },
-  {
-    date: "2026-06-15 — closed",
-    project: "Syncthing",
-    pr: 10749,
-    title: "Preserve config values when PATCHing folder",
-    description: "Fixed PATCH /rest/config/folders/:id resetting unspecified fields to defaults. Closed: maintainer does not accept AI-mediated PR discussions.",
-    language: "Go",
-    type: "bugfix",
-    status: "closed",
-    url: "https://github.com/syncthing/syncthing/pull/10749",
-  },
-  {
-    date: "2026-06-15",
-    project: "Paseo",
-    pr: 1551,
-    title: "Add agent unarchive command",
-    description: "Added paseo agent unarchive as the inverse of the existing archive command. Uses the same refresh_agent_request RPC the app's Unarchive button calls.",
-    language: "TypeScript",
-    type: "feature",
-    status: "open",
-    url: "https://github.com/getpaseo/paseo/pull/1551",
-  },
-];
+const stats = getStats();
+const achStats = getAchievementStats();
+const languages = [...new Set(contributions.map((c) => c.language))];
+const types = [...new Set(contributions.map((c) => c.type))];
+const statuses = [...new Set(contributions.map((c) => c.status))];
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>srmdn — OSS Contributions</title>
-    <style>
-      * { box-sizing: border-box; margin: 0; padding: 0; }
-      body {
-        font-family: system-ui, -apple-system, sans-serif;
-        background: #0d1117;
-        color: #c9d1d9;
-        line-height: 1.6;
-        min-height: 100vh;
-      }
-      main {
-        max-width: 720px;
-        margin: 0 auto;
-        padding: 48px 20px 80px;
-      }
-      header {
-        margin-bottom: 48px;
-        padding-bottom: 24px;
-        border-bottom: 1px solid #21262d;
-      }
-      h1 {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #f0f6fc;
-        margin-bottom: 8px;
-      }
-      h1 span { color: #58a6ff; }
-      header p {
-        color: #8b949e;
-        font-size: 1rem;
-      }
-      .stats {
-        display: flex;
-        gap: 24px;
-        margin-top: 16px;
-      }
-      .stat {
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-      }
-      .stat-number {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #f0f6fc;
-      }
-      .stat-label {
-        color: #8b949e;
-        font-size: 0.875rem;
-      }
-      .contributions {
-        display: flex;
-        flex-direction: column;
-        gap: 16px;
-      }
-      .card {
-        background: #161b22;
-        border: 1px solid #21262d;
-        border-radius: 8px;
-        padding: 20px 24px;
-        transition: border-color 0.15s;
-      }
-      .card:hover {
-        border-color: #30363d;
-      }
-      .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 12px;
-      }
-      .card-project {
-        font-weight: 600;
-        color: #f0f6fc;
-        font-size: 1.05rem;
-      }
-      .card-meta {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-      }
-      .badge {
-        font-size: 0.75rem;
-        padding: 2px 8px;
-        border-radius: 12px;
-        font-weight: 500;
-      }
-      .badge-feature {
-        background: rgba(63, 185, 80, 0.15);
-        color: #3fb950;
-        border: 1px solid rgba(63, 185, 80, 0.3);
-      }
-      .badge-bugfix {
-        background: rgba(248, 81, 73, 0.15);
-        color: #f85149;
-        border: 1px solid rgba(248, 81, 73, 0.3);
-      }
-      .badge-lang {
-        background: rgba(88, 166, 255, 0.12);
-        color: #58a6ff;
-        border: 1px solid rgba(88, 166, 255, 0.25);
-      }
-      .badge-closed {
-        background: rgba(139, 148, 158, 0.12);
-        color: #8b949e;
-        border: 1px solid rgba(139, 148, 158, 0.25);
-      }
-      .card.closed {
-        opacity: 0.65;
-      }
-      .card.closed .card-title {
-        color: #8b949e;
-      }
-      .card-title {
-        color: #58a6ff;
-        text-decoration: none;
-        font-weight: 500;
-        display: block;
-        margin-bottom: 8px;
-      }
-      .card-title:hover { text-decoration: underline; }
-      .card-desc {
-        color: #8b949e;
-        font-size: 0.9rem;
-      }
-      .card-date {
-        color: #484f58;
-        font-size: 0.8rem;
-        margin-top: 12px;
-      }
-      footer {
-        margin-top: 48px;
-        padding-top: 24px;
-        border-top: 1px solid #21262d;
-        text-align: center;
-        color: #484f58;
-        font-size: 0.8rem;
-      }
-      footer a {
-        color: #58a6ff;
-        text-decoration: none;
-      }
-      footer a:hover { text-decoration: underline; }
-    </style>
-  </head>
-  <body>
-    <main>
-      <header>
-        <h1><span>srmdn</span>/oss</h1>
-        <p>Open source contributions</p>
-        <div class="stats">
-          <div class="stat">
-            <span class="stat-number">
-              {contributions.filter((c) => c.status === "open").length}
-            </span>
-            <span class="stat-label">Open PRs</span>
-          </div>
-          <div class="stat">
-            <span class="stat-number">
-              {[...new Set(contributions.map((c) => c.project))].length}
-            </span>
-            <span class="stat-label">Projects</span>
-          </div>
-        </div>
-      </header>
-
-      <div class="contributions">
-        {contributions.map((c) => (
-          <article class={`card ${c.status === "closed" ? "closed" : ""}`}>
-            <div class="card-header">
-              <span class="card-project">{c.project}</span>
-              <div class="card-meta">
-                <span class={`badge ${c.type === "feature" ? "badge-feature" : "badge-bugfix"}`}>
-                  {c.type === "feature" ? "feature" : "bugfix"}
-                </span>
-                {c.status === "closed" ? (
-                  <span class="badge badge-closed">closed</span>
-                ) : null}
-                <span class="badge badge-lang">{c.language}</span>
-              </div>
-            </div>
-            <a href={c.url} class="card-title">#{c.pr} — {c.title}</a>
-            <p class="card-desc">{c.description}</p>
-            <p class="card-date">{c.date}</p>
-          </article>
-        ))}
+<Layout
+  title="srmdn — OSS Contributions"
+  description="Open source contributions by srmdn"
+  currentPage="home"
+>
+  <section class="section">
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-number">{stats.total}</span>
+        <span class="stat-label">Contributions</span>
       </div>
+      <div class="stat">
+        <span class="stat-number">{stats.open}</span>
+        <span class="stat-label">Open PRs</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">{stats.merged}</span>
+        <span class="stat-label">Merged</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">{stats.projects}</span>
+        <span class="stat-label">Projects</span>
+      </div>
+    </div>
+  </section>
 
-      <footer>
-        <a href="https://github.com/srmdn">@srmdn</a> on GitHub
-      </footer>
-    </main>
-  </body>
-</html>
+  <section class="section">
+    <h2 class="section-title">Achievements</h2>
+    <div class="achievements">
+      {achievements.map((a) => (
+        <div class={`achievement ${!a.earned ? "locked" : ""}`}>
+          <div class="achievement-header">
+            <span class="achievement-icon">{a.earned ? "🏆" : "🔒"}</span>
+            <span class="achievement-name">{a.name}</span>
+          </div>
+          <p class="achievement-desc">{a.description}</p>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Pull Requests</h2>
+    <FilterBar languages={languages} types={types} statuses={statuses} />
+
+    <div class="contributions">
+      {contributions.map((c) => (
+        <Card contribution={c} />
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .contributions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+</style>

@@ -1,0 +1,99 @@
+---
+import Badge from "./Badge.astro";
+import type { Contribution } from "../data/contributions";
+
+interface Props {
+  contribution: Contribution;
+}
+
+const { contribution: c } = Astro.props;
+const typeVariant = c.type === "feature" ? "success" : "danger" as const;
+const langVariant = c.language === "Go" ? "accent" : "accent" as const;
+const statusVariant = c.status === "open" ? "success" : c.status === "merged" ? "accent" : "neutral" as const;
+---
+
+<article
+  class={`card ${c.status === "closed" ? "closed" : ""}`}
+  data-card
+  data-status={c.status}
+  data-type={c.type}
+  data-lang={c.language}
+>
+  <div class="card-header">
+    <span class="card-project">
+      <a href={`https://github.com/${c.repo}`} target="_blank" rel="noopener">{c.project}</a>
+    </span>
+    <div class="card-meta">
+      <Badge variant={typeVariant}>{c.type}</Badge>
+      <Badge variant={statusVariant}>{c.status}</Badge>
+      <Badge variant={langVariant}>{c.language}</Badge>
+    </div>
+  </div>
+  <a href={c.url} class="card-title">#{c.pr} — {c.title}</a>
+  <p class="card-desc">{c.description}</p>
+  <p class="card-date">{c.date}</p>
+</article>
+
+<style>
+  .card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  }
+  .card:hover {
+    border-color: var(--border-hover);
+  }
+  .card.closed {
+    opacity: 0.65;
+  }
+  .card.closed .card-title {
+    color: var(--text-muted);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .card-project {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 1.05rem;
+  }
+  .card-project a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .card-project a:hover {
+    color: var(--accent);
+  }
+  .card-meta {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .card-title {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .card-title:hover {
+    text-decoration: underline;
+  }
+  .card-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .card-date {
+    color: var(--text-faint);
+    font-size: 0.8rem;
+    margin-top: 12px;
+  }
+</style>
