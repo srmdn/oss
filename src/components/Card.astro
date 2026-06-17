@@ -7,9 +7,10 @@ interface Props {
 }
 
 const { contribution: c } = Astro.props;
-const typeVariant = c.type === "feature" ? "success" : "danger" as const;
+const typeVariant = c.type === "feature" ? "success" : c.type === "bugfix" ? "danger" : "info" as const;
 const langVariant = c.language === "Go" ? "accent" : "accent" as const;
 const statusVariant = c.status === "open" ? "success" : c.status === "merged" ? "accent" : "neutral" as const;
+const isPR = c.url.includes("/pull/");
 ---
 
 <article
@@ -29,7 +30,7 @@ const statusVariant = c.status === "open" ? "success" : c.status === "merged" ? 
       <Badge variant={langVariant}>{c.language}</Badge>
     </div>
   </div>
-  <a href={c.url} class="card-title">#{c.pr} — {c.title}</a>
+  <a href={c.url} class="card-title">{isPR ? `#${c.pr}` : `Issue #${c.pr}`} — {c.title}</a>
   <p class="card-desc">{c.description}</p>
   <p class="card-date">{c.date}</p>
 </article>

@@ -5,14 +5,28 @@ export interface Contribution {
   pr: number;
   title: string;
   description: string;
-  language: "Go" | "TypeScript" | "Rust" | "Python" | "Other";
-  type: "feature" | "bugfix";
+  language: "Go" | "TypeScript" | "JavaScript" | "Rust" | "Python" | "Other";
+  type: "feature" | "bugfix" | "triage";
   status: "open" | "merged" | "closed";
   url: string;
   branch: string;
 }
 
 export const contributions: Contribution[] = [
+  {
+    date: "2026-06-17",
+    project: "Day.js",
+    repo: "iamkun/dayjs",
+    pr: 3140,
+    title: "Triage: id locale time separator is correct",
+    description:
+      "Triaged a bug report claiming the Indonesian locale time separator was incorrect. Confirmed the dot separator (pukul 14.30) matches official EYD V government spelling standards, closing the non-bug with authoritative citation.",
+    language: "JavaScript",
+    type: "triage",
+    status: "open",
+    url: "https://github.com/iamkun/dayjs/issues/3140#issuecomment-4731963256",
+    branch: "",
+  },
   {
     date: "2026-06-17",
     project: "Quran.com",
