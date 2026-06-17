@@ -14,6 +14,20 @@ export interface Contribution {
 
 export const contributions: Contribution[] = [
   {
+    date: "2026-06-17",
+    project: "VitePress",
+    repo: "vuejs/vitepress",
+    pr: 5218,
+    title: "docs: add Indonesian (Bahasa Indonesia) translation",
+    description:
+      "Added complete Indonesian translation of VitePress documentation. Covers 36 files across home page, guide, and reference sections.",
+    language: "TypeScript",
+    type: "feature",
+    status: "open",
+    url: "https://github.com/vuejs/vitepress/pull/5218",
+    branch: "main",
+  },
+  {
     date: "2026-06-15",
     project: "BillionMail",
     repo: "Billionmail/BillionMail",

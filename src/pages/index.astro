@@ -3,10 +3,8 @@ import Layout from "../components/Layout.astro";
 import Card from "../components/Card.astro";
 import FilterBar from "../components/FilterBar.astro";
 import { contributions, getStats, type Contribution } from "../data/contributions";
-import { achievements, getAchievementStats } from "../data/achievements";
 
 const stats = getStats();
-const achStats = getAchievementStats();
 const languages = [...new Set(contributions.map((c) => c.language))];
 const types = [...new Set(contributions.map((c) => c.type))];
 const statuses = [...new Set(contributions.map((c) => c.status))];
@@ -35,21 +33,6 @@ const statuses = [...new Set(contributions.map((c) => c.status))];
         <span class="stat-number">{stats.projects}</span>
         <span class="stat-label">Projects</span>
       </div>
-    </div>
-  </section>
-
-  <section class="section">
-    <h2 class="section-title">Achievements</h2>
-    <div class="achievements">
-      {achievements.map((a) => (
-        <div class={`achievement ${!a.earned ? "locked" : ""}`}>
-          <div class="achievement-header">
-            <span class="achievement-icon">{a.earned ? "🏆" : "🔒"}</span>
-            <span class="achievement-name">{a.name}</span>
-          </div>
-          <p class="achievement-desc">{a.description}</p>
-        </div>
-      ))}
     </div>
   </section>
 
