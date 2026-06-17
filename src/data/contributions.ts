@@ -15,6 +15,20 @@ export interface Contribution {
 export const contributions: Contribution[] = [
   {
     date: "2026-06-17",
+    project: "Quran.com",
+    repo: "quran/quran.com-frontend-next",
+    pr: 3305,
+    title: "fix: improve Indonesian locale quality",
+    description:
+      "Fixed 30+ machine translation artifacts and terminology inconsistencies across 4 Indonesian locale files. Corrected 'comedy spin' to 'carousel', mismatched theme names, and verb form issues.",
+    language: "TypeScript",
+    type: "bugfix",
+    status: "open",
+    url: "https://github.com/quran/quran.com-frontend-next/pull/3305",
+    branch: "fix/id-locale-quality",
+  },
+  {
+    date: "2026-06-17",
     project: "VitePress",
     repo: "vuejs/vitepress",
     pr: 5218,
