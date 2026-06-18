@@ -29,6 +29,20 @@ export const contributions: Contribution[] = [
   },
   {
     date: "2026-06-17",
+    project: "go-units",
+    repo: "docker/go-units",
+    pr: 45,
+    title: "Triage: suggested simpler fix for HumanSizeWithPrecision bug",
+    description:
+      "Reviewed a stalled 2.5-year-old PR fixing scientific notation in HumanSizeWithPrecision (1e+03MB instead of 1GB). Suggested a simpler 4-line output-detection approach instead of the original's math-heavy refactor.",
+    language: "Go",
+    type: "triage",
+    status: "open",
+    url: "https://github.com/docker/go-units/pull/45#issuecomment-4737600471",
+    branch: "",
+  },
+  {
+    date: "2026-06-17",
     project: "Quran.com",
     repo: "quran/quran.com-frontend-next",
     pr: 3305,
